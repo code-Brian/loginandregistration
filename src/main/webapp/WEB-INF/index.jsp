@@ -17,6 +17,8 @@
 <body>
 	<div class="contaioner">
 		<h1>Welcome to Login and Registration!</h1>
+		<p>Hello, <c:out value="${user.userName}"/>!</p>
+		<p class="btn btn-warning"><a class="text-decoration-none text-light" href="/logout">Logout</a></p>
 	</div>
 </body>
 </html>

@@ -18,26 +18,54 @@ import com.loginandregistration.services.UserService;
 @Controller
 public class LoginController {
 	@Autowired
-	UserService userServ;
+	private UserService userServ;
 	
 	@GetMapping("/login")
-	public String login(@ModelAttribute("user") User user) {
+	public String login(Model model) {
+		model.addAttribute("user", new User());
+		model.addAttribute("loginUser", new LoginUser());
 		return "login.jsp";
 	}
 	
-	@PostMapping("/login/create")
-	public String createLogin(@Valid @ModelAttribute("user") User user, BindingResult result, Model model, HttpSession session) {
-		if(result.hasErrors()) {
-			model.addAttribute("newLogin", new LoginUser());
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.removeAttribute("userId");
+		return "redirect:/login";
+	}
+
+	@PostMapping("/register")
+	public String register(@Valid @ModelAttribute("user") User user, BindingResult result, Model model, HttpSession session) {
+		// We need to add some DB validations
+		// This can be done in the Service module 
+		// Head on over and take a look!
+		// This checks to see if passwords match
+		// If they don't, a custom error message is added from the Service
+		User createdUser =  userServ.register(user, result);
+		if(createdUser == null) {
+			// These are only model level validations
+			model.addAttribute("loginUser", new LoginUser());
 			return "login.jsp";
 		} else {
 			// On success
 			// User LoginService to create a new user and store their info in the DB
 			// Also store user id in session so we may determin login status
 			// Upon successful creation of user and validation, redirect to home page
-			userServ.create(user);
-			return "redirect:/";
+			
+			session.setAttribute("userId", createdUser.getId());
+			return "redirect:/dashboard";
 		}
 	}
+	
+	@PostMapping("/login")
+	public String login(@Valid @ModelAttribute("loginUser") LoginUser logUser, BindingResult result, HttpSession session, Model model) {
+		User loggedUser = userServ.login(logUser, result);
+		if(loggedUser == null) {
+			model.addAttribute("user", new User());
+			return "login.jsp";
+		}
+		session.setAttribute("userId", loggedUser.getId());
+		return "redirect:/dashboard";
+	}
+	
 	
 }

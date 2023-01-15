@@ -20,7 +20,7 @@
 		<div class="container d-flex mt-5">
 			<div class="container">
 				<h2>Register</h2>
-				<form:form action="/login/create" method="POST" modelAttribute="user">
+				<form:form action="/register" method="POST" modelAttribute="user">
 					<div>
 						<form:label path="userName">Username</form:label>
 						<form:input path="userName"/>
@@ -46,7 +46,7 @@
 			</div>
 			<div class="container">
 				<h2>Login</h2>
-				<form:form action="/login" method="GET" modelAttribute="user">
+				<form:form action="/login" method="POST" modelAttribute="loginUser">
 					<div>
 						<form:label path="email">Email</form:label>
 						<form:input path="email" type="email"/>
@@ -54,7 +54,7 @@
 					</div>
 					<div>
 						<form:label path="password">Password</form:label>
-						<form:input path="password" type="email"/>
+						<form:input path="password" type="password"/>
 						<form:errors path="password"/>
 					</div>
 					<button class="btn btn-success">Login</button>
