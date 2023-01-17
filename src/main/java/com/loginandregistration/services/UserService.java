@@ -2,6 +2,7 @@ package com.loginandregistration.services;
 
 import java.util.Optional;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -35,6 +36,8 @@ public class UserService {
 		}
 
 		if(!result.hasErrors()) {
+			String hashed = BCrypt.hashpw(createdUser.getPassword(), BCrypt.gensalt());
+			createdUser.setPassword(hashed);
 			return this.create(createdUser);
 		}
 		return null;
@@ -43,7 +46,7 @@ public class UserService {
 	
 	public User login(LoginUser logUser, BindingResult result) {
 		Optional<User> user = userRepo.findByEmail(logUser.getEmail());
-		if(user.isPresent() && logUser.getPassword().equals(user.get().getPassword())) {
+		if(user.isPresent() && BCrypt.checkpw(logUser.getPassword(), user.get().getPassword())) {
 			return user.get();
 		}
 		result.rejectValue("password","Invalid", "Invalid credentials!");

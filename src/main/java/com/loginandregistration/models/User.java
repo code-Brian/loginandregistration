@@ -15,8 +15,11 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.format.annotation.DateTimeFormat;
 
+// Can BCrypt happen at the model level?
+// Will this always only be implemented at the service level?
 @Entity
 @Table(name="users")
 public class User {
